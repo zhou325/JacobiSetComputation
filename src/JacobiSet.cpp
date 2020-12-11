@@ -146,10 +146,12 @@ bool JacobiSet::alignment(int v1, int v2) const {
 // POS1 function -- explained on Pg 111 in Vijay's thesis.
 bool JacobiSet::POS1(int a, int b, int v) const{
 
-#ifdef USE_SOS
-   return sos_lambda3(a+1,b+1,v+1)->signum < 0;
-#else
+// #ifdef USE_SOS
+    // printf(" --- SOS. a: %d\n", a);
+//    return sos_lambda3(a+1,b+1,v+1)->signum < 0;
+// #else
     // Algo in Vijay's Thesis. Pg 111
+    // printf(" --- Algo in Vijay's Thesis POS1. a: %d\n", a);
     double X = (f->at(a) * (g->at(v)-g->at(b))) +
                (f->at(b) * (g->at(a)-g->at(v))) +
                (f->at(v) * (g->at(b)-g->at(a)));
@@ -162,7 +164,7 @@ bool JacobiSet::POS1(int a, int b, int v) const{
 
     printf(" --- JacobiSet::POS1 failed!\n");
     return true;
-#endif
+// #endif
 }
 
 // ------------------------------------------------------------------------------------------
@@ -227,6 +229,7 @@ void JacobiSet::compute() {
 
         // the vertices of this edge
         int e1 = iter->first;       int e2 = iter->second;
+        printf("e1: %d, e2: %d\n", e1, e2);
 
         // the vertices in the link
         std::pair<int,int> lnk = mesh->get_e_link(*iter);

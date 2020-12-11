@@ -81,6 +81,7 @@ int main(int argc, char *argv[]){
     // create test functions
     std::vector<double> f, g;
     size_t fsz, gsz;
+
 #if 0
     double *af = read_binary<double>("f.raw", fsz);
     double *ag = read_binary<double>("g.raw", gsz);
@@ -94,13 +95,16 @@ int main(int argc, char *argv[]){
     g.insert(g.end(), ag, ag+gsz);
 
 #else
-
-    f.resize(nv);
+    f.resize(nv); // set length of f and g to #vertices
     g.resize(nv);
     for(int i = 0; i < nv; i++) {
 
-        f[i] = mesh->vertices[i][1];
-        g[i] = mesh->vertices[i][0];
+        // f[i] = mesh->vertices[i][1];
+        // g[i] = mesh->vertices[i][0];
+        f[i] = ((mesh->vertices[i][0]-1) * (mesh->vertices[i][0]-1) + mesh->vertices[i][1]*mesh->vertices[i][1]) * ((mesh->vertices[i][0]+1) * (mesh->vertices[i][0]+1) + mesh->vertices[i][1]*mesh->vertices[i][1]);
+        g[i] = (mesh->vertices[i][0]-1) * (mesh->vertices[i][0]-1) + (mesh->vertices[i][1]-1) * (mesh->vertices[i][1]-1);
+
+        printf(" f_i %f, g_i %f\n", f[i], g[i]);
     }
 
     FILE *datafile = fopen("f.raw", "wb");
@@ -114,7 +118,7 @@ int main(int argc, char *argv[]){
     //exit(1);
 #endif
     // now compute Jacobi set
-    JacobiSet js(mesh, &f, &g);
+    JacobiSet js(mesh, &f, &g); // input: f,g: two vectors of scalar fields
     js.compute();
 
     std::string outfile = filename.substr(0, filename.find_last_of("."));
